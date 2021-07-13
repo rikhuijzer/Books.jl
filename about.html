@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>About - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h1 data-number="1" id="sec:about"><span class="header-section-number">1</span> About</h1>
+<p>Similar to <a href="https://bookdown.org" target="_blank">Bookdown</a> this package is, basically, a wrapper around <a href="https://pandoc.org/" target="_blank">Pandoc</a>. For websites, this package allows for:</p>
+<ul>
+<li>Building a website spanning multiple pages.</li>
+<li>Live reloading the website to see changes quickly; thanks to Pandoc and <a href="https://github.com/tlienart/LiveServer.jl" target="_blank">LiveServer.jl</a>.</li>
+<li>Cross-references from one web page to a section on another page.</li>
+<li>Embedding dynamic output, while still allowing normal Julia package utilities, such as unit testing and live reloading (Revise.jl).</li>
+<li>Showing code blocks as well as output.</li>
+</ul>
+<p>If you don’t need PDFs or EPUBs, then <a href="https://github.com/tlienart/Franklin.jl" target="_blank">Franklin.jl</a> is probably a better choice. To create single pages and PDFs containing code blocks, see <a href="https://github.com/JunoLab/Weave.jl" target="_blank">Weave.jl</a>.</p>
+<p>One of the main differences with Franklin.jl, Weave.jl and knitr (Bookdown) is that this package completely decouples the computations from the building of the output. The benefit of this is that you can spawn two separate processes, namely the one to serve your webpages:</p>
+<pre><code>$ julia --project -e &#39;using Books; serve()&#39;
+Watching ./pandoc/favicon.png
+Watching ./src/plots.jl
+[...]
+ ✓ LiveServer listening on http://localhost:8001/ ...
+  (use CTRL+C to shut down)
+</code></pre>
+<p>and the one where you do the computations for your package:</p>
+<pre><code>$ julia --project -ie &#39;using Books&#39;
+
+julia&gt; gen()
+[...]
+Updating html</code></pre>
+<p>This way, the website remains responsive when the computations are running. Thanks to LiveServer.jl and Pandoc, updating the page after changing text or code takes less than a second. Also, because the <code>serve</code> process does relatively few things, it almost never crashes.</p>
+<p>As another benefit, the decoupling allows you to have more flexiblity in when you want to run what code. In combination with Revise.jl, you can quickly update your code and see the updated output.</p>
+<p>Finally, a big difference with this package and other packages is that you decide yourself what you want to show for a code block. For example, in R</p>
+<pre>
+```{r, results='hide'}
+print("Hello, world!")
+```
+</pre>
+<p>shows the code and not the output. Instead, in Books, you would write</p>
+<pre>
+```jl
+sc(raw"""
+print("Hello, world!")
+"""
+)
+```
+</pre>
+<p>which is displayed as</p>
+<pre><code>print(&quot;Hello, world!&quot;)</code></pre>
+<p>Here, <code>sc</code> is one of the convenience methods exported by Books.jl. Although this approach is more verbose in some cases, it is also much more flexible. In essence, you can come up with your own pre- or post-processing logic. For example, lets write</p>
+<pre>
+```jl
+code = """
+    df = DataFrame(a=[1, 2], b=[3, 4])
+    Options(df, caption="A table", label=nothing)
+    """
+repeat(sco(code), 4)
+```
+</pre>
+<p>which shows the code and output (<code>sco</code>) 4 times:</p>
+<pre><code>df = DataFrame(a=[1, 2], b=[3, 4])
+Options(df, caption=&quot;A table&quot;, label=nothing)</code></pre>
+<table>
+<caption>A table</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<pre><code>df = DataFrame(a=[1, 2], b=[3, 4])
+Options(df, caption=&quot;A table&quot;, label=nothing)</code></pre>
+<table>
+<caption>A table</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<pre><code>df = DataFrame(a=[1, 2], b=[3, 4])
+Options(df, caption=&quot;A table&quot;, label=nothing)</code></pre>
+<table>
+<caption>A table</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<pre><code>df = DataFrame(a=[1, 2], b=[3, 4])
+Options(df, caption=&quot;A table&quot;, label=nothing)</code></pre>
+<table>
+<caption>A table</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+         
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

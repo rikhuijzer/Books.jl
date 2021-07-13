@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>References - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h1 class="unnumbered" id="references">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
+<div id="ref-orwell1945animal" class="csl-entry" role="doc-biblioentry">
+Orwell, G. (1945). <em><span class="nocase">Animal farm: a fairy story</span></em>. Houghton Mifflin Harcourt.
+</div>
+<div id="ref-orwell1949nineteen" class="csl-entry" role="doc-biblioentry">
+Orwell, G. (1949). <em><span class="nocase">Nineteen eighty-four: a novel</span></em>. Secker &amp; Warburg.
+</div>
+</div>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+             
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

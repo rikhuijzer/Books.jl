@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>Obtaining function definitions - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="3.3" id="sec:function_code_blocks"><span class="header-section-number">3.3</span> Obtaining function definitions</h2>
+<p>So, instead of passing a string which <code>Books.jl</code> will evaluate, <code>Books.jl</code> can also obtain the code for a method directly. (Thanks to <code>CodeTracking.@code_string</code>.) For example, inside our package, we can define the following method:</p>
+<pre><code>function my_data()
+    DataFrame(A = [1, 2], B = [3, 4], C = [5, 6], D = [7, 8])
+end</code></pre>
+<p>To show code and output (sco) for this method, use the <code>@sco</code> macro. This macro is exported by Books, so ensure that you have <code>using Books</code> in your package.</p>
+<pre>
+```jl
+@sco M.my_data()
+```
+</pre>
+<p>This gives</p>
+<pre><code>function my_data()
+    DataFrame(A = [1, 2], B = [3, 4], C = [5, 6], D = [7, 8])
+end
+my_data()</code></pre>
+<div id="tbl:my_data">
+<table>
+<caption>Table 6: My data.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">A</th>
+<th style="text-align: right;">B</th>
+<th style="text-align: right;">C</th>
+<th style="text-align: right;">D</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To only show the source code, use <code>@sc</code>:</p>
+<pre>
+```jl
+@sc M.my_data()
+```
+</pre>
+<p>resulting in</p>
+<pre><code>function my_data()
+    DataFrame(A = [1, 2], B = [3, 4], C = [5, 6], D = [7, 8])
+end</code></pre>
+<p>Since we’re using methods as code blocks, we can use the code shown in one code block in another. For example, to determine the mean of column A:</p>
+<pre>
+```jl
+@sco M.my_data_mean(my_data())
+```
+</pre>
+<p>shows as</p>
+<pre><code>function my_data_mean(df::DataFrame)
+    Statistics.mean(df.A)
+end
+my_data_mean(my_data())</code></pre>
+<p>1.5</p>
+<p>Or, we can show the output inline, namely 1.5, by using</p>
+<pre><code>`jl M.my_data_mean(my_data())`</code></pre>
+<p>It is also possible to show methods with parameters. For example,</p>
+<pre>
+```jl
+@sc M.hello("" )
+```
+</pre>
+<p>shows</p>
+<pre><code>hello(name) = &quot;Hello, $name&quot;</code></pre>
+<p>Now, we can show</p>
+<pre><code>M.hello(&quot;World&quot;)</code></pre>
+<pre class="output"><code>Hello, World</code></pre>
+<p>Here, the <code>M</code> can be a bit confusing for readers. If this is a problem, you can export the method <code>hello</code> to avoid it. If you are really sure, you can export all symbols in your module with something like <a href="https://discourse.julialang.org/t/exportall/4970/16">this</a>.</p>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

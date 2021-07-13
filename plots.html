@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>Plots - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="3.4" id="sec:plots"><span class="header-section-number">3.4</span> Plots</h2>
+<p>An AlgebraOfGraphics plot is shown below in Figure <a href="/Books.jl#fig:example_plot">2</a>. For Plots.jl and Makie.jl see, respectively section Section <a href="/Books.jl/plots.html#sec:plotsjl">3.4.1</a> and Section <a href="/Books.jl/plots.html#sec:makie">3.4.2</a>. This is actually a bit tricky, because we want to show vector graphics (SVG) on the web, but these are not supported (well) by LaTeX. Therefore, portable network graphics (PNG) images are also created and passed to LaTeX.</p>
+<pre><code>function example_plot()
+    I = 1:30
+    df = (x=I, y=I.^2)
+    xy = data(df) * mapping(:x, :y)
+    fg = draw(xy)
+end
+example_plot()</code></pre>
+<figure>
+<img src="/Books.jl/im/M_example_plot_.svg" id="fig:example_plot" alt="Figure 2: Example plot." /><figcaption aria-hidden="true">Figure 2: Example plot.</figcaption>
+</figure>
+<p>If the output is a string instead of the output you expected, then check whether you load the related packages in time. For example, for this plot, you need to load AlgebraOfGraphics.jl together with Books.jl so that Requires.jl will load the code for handling AlgebraOfGraphics objects.</p>
+<p>For multiple images, use <code>Options.(objects, paths)</code>:</p>
+<pre><code>function multiple_example_plots()
+    filenames = [&quot;example_plot_$i&quot; for i in 2:3]
+    I = 1:30
+    df = (x=I, y=I.*2, z=I.^3)
+    objects = [
+        draw(data(df) * mapping(:x, :y))
+        draw(data(df) * mapping(:x, :z))
+    ]
+    Options.(objects, filenames)
+end</code></pre>
+<p>Resulting in Figure <a href="/Books.jl#fig:example_plot_2">3</a> and Figure <a href="/Books.jl#fig:example_plot_3">4</a>:</p>
+<figure>
+<img src="/Books.jl/im/example_plot_2.svg" id="fig:example_plot_2" alt="Figure 3: Example plot 2." /><figcaption aria-hidden="true">Figure 3: Example plot 2.</figcaption>
+</figure>
+<figure>
+<img src="/Books.jl/im/example_plot_3.svg" id="fig:example_plot_3" alt="Figure 4: Example plot 3." /><figcaption aria-hidden="true">Figure 4: Example plot 3.</figcaption>
+</figure>
+<p>For changing the size, use <code>axis</code> from AlgebraOfGraphics:</p>
+<pre><code>function image_options_plot()
+    I = 1:0.1:30
+    df = (x=I, y=sin.(I))
+    xy = data(df) * visual(Lines) * mapping(:x, :y)
+    axis = (width = 600, height = 140)
+    draw(xy; axis)
+end
+image_options_plot()</code></pre>
+<figure>
+<img src="/Books.jl/im/M_image_options_plot_.svg" id="fig:image_options_plot" alt="Figure 5: Image options plot." /><figcaption aria-hidden="true">Figure 5: Image options plot.</figcaption>
+</figure>
+<p>And, for adjusting the caption, use <code>Options</code>:</p>
+<pre><code>function combined_options_plot()
+    fg = image_options_plot()
+    Options(fg; caption=&quot;Sine function.&quot;)
+end
+combined_options_plot()</code></pre>
+<figure>
+<img src="/Books.jl/im/M_combined_options_plot_.svg" alt="Sine function." /><figcaption aria-hidden="true">Sine function.</figcaption>
+</figure>
+<p>or the caption can be specified in the Markdown file:</p>
+<pre>
+```jl
+Options(M.image_options_plot(); caption="Label specified in Markdown.")
+```
+</pre>
+<figure>
+<img src="/Books.jl/im/Options_M_image_options_plot_caption_Label_specified_in_Markdown_.svg" alt="Label specified in Markdown." /><figcaption aria-hidden="true">Label specified in Markdown.</figcaption>
+</figure>
+<h3 data-number="3.4.1" id="sec:plotsjl"><span class="header-section-number">3.4.1</span> Plots</h3>
+<pre><code>function plotsjl()
+    p = plot(1:10, 1:2:20)
+    caption = &quot;An example plot with Plots.jl.&quot;
+    # Label default to `nothing`, which will not create a cross-reference.
+    label = missing
+    Options(p; caption, label)
+end
+plotsjl()</code></pre>
+<figure>
+<img src="/Books.jl/im/M_plotsjl_.svg" alt="An example plot with Plots.jl." /><figcaption aria-hidden="true">An example plot with Plots.jl.</figcaption>
+</figure>
+<h3 data-number="3.4.2" id="sec:makie"><span class="header-section-number">3.4.2</span> Makie</h3>
+<pre><code>function makiejl()
+    x = range(0, 10, length=100)
+    y = sin.(x)
+    p = lines(x, y)
+    caption = &quot;An example plot with Makie.jl.&quot;
+    label = missing
+    Options(p; caption, label)
+end
+makiejl()</code></pre>
+<figure>
+<img src="/Books.jl/im/M_makiejl_.svg" alt="An example plot with Makie.jl." /><figcaption aria-hidden="true">An example plot with Makie.jl.</figcaption>
+</figure>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

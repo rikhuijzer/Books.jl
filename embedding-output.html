@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>Embedding output - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="3.1" id="sec:embedding-output"><span class="header-section-number">3.1</span> Embedding output</h2>
+<p>For embedding code, you can use the <code>jl</code> inline code or code block. For example, to show the Julia version, define a code block like</p>
+<pre>
+```jl
+M.julia_version()
+```
+</pre>
+<p>in a Markdown file. Then, in your package, define the method <code>julia_version()</code>:</p>
+<pre><code>M.julia_version() = &quot;This book is built with Julia $VERSION.&quot;</code></pre>
+<p>Next, ensure that you call <code>using Books; gen(; M)</code>, where <code>M = YourModule</code>. Alternatively, if you work on a large project and want to only generate the output for one or more Markdown files in <code>contents/</code>, such as <code>index.md</code>, use</p>
+<pre><code>gen(&quot;index&quot;)</code></pre>
+<pre class="output"><code>Writing output of `M.homepage_intro()` to _gen/M_homepage_intro_.md
+Updating html</code></pre>
+<p>Calling <code>gen</code> will place the text</p>
+<pre><code>This book is built with Julia 1.6.1.</code></pre>
+<p>at the right path so that it can be included by Pandoc. You can also embed output inline with single backticks like</p>
+<pre><code>`jl julia_version()`</code></pre>
+<p>or just call Julia’s constant <code>VERSION</code> directly from within the Markdown file:</p>
+<pre><code>This book is built with Julia `jl string(VERSION)`.</code></pre>
+<p>This book is built with Julia 1.6.1.</p>
+<p>While doing this, it is expected that you also have the browser open and a server running, see Section <a href="/Books.jl/getting-started.html#sec:getting-started">2</a>. That way, the page is immediately updated when you run <code>gen</code>.</p>
+<p>Note that it doesn’t matter where you define the function <code>julia_version</code>, as long as it is in your module. To save yourself some typing, and to allow yourself to get some coffee while Julia gets up to speed, you can start Julia for your package with</p>
+<pre><code>$ julia --project -ie &#39;using Books; using MyPackage; M = MyPackage&#39;</code></pre>
+<p>which allows you to re-generate all the content by calling</p>
+<pre><code>julia&gt; gen()</code></pre>
+<p>To run this method automatically when you make a change in your package, ensure that you loaded <a href="https://github.com/timholy/Revise.jl">Revise.jl</a> before loading your package and run</p>
+<pre><code>entr(gen, [&quot;contents&quot;], [M])</code></pre>
+<p>where M is the name of your module. Which will automatically run <code>gen()</code> whenever one of the files in <code>contents/</code> changes or any code in the module <code>M</code>. In the background, <code>gen</code> passes the methods through <code>convert_output(expr::String, path, out::T)</code> where <code>T</code> can, for example, be a DataFrame or a plot. To show that a DataFrame is converted to a Markdown table, we define a method</p>
+<pre><code>my_table() = DataFrame(U = [1, 2], V = [:a, :b], W = [3, 4])</code></pre>
+<p>and add its output to the Markdown file with</p>
+<pre>
+```jl
+M.my_table()
+```
+</pre>
+<p>Then, it will show as</p>
+<div id="tbl:my_table">
+<table>
+<caption>Table 2: My table.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">U</th>
+<th style="text-align: right;">V</th>
+<th style="text-align: right;">W</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">a</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">b</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>where the caption and the label are inferred from the <code>path</code>. Refer to Table <a href="/Books.jl#tbl:my_table">2</a> with</p>
+<pre><code>@tbl:my_table</code></pre>
+<blockquote>
+<p>Table <a href="/Books.jl#tbl:my_table">2</a></p>
+</blockquote>
+<p>To show multiple objects, pass a <code>Vector</code>:</p>
+<pre><code>multiple_df_vector() =
+    [DataFrame(Z = [3]), DataFrame(U = [4, 5], V = [6, 7])]
+multiple_df_vector()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">U</th>
+<th style="text-align: right;">V</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+<p>When you want to control where the various objects are saved, use <code>Options</code>. This way, you can pass a informative path with plots for which informative captions, cross-reference labels and image names can be determined.</p>
+<pre><code>function multiple_df_example()
+    objects = [
+        DataFrame(X = [3, 4], Y = [5, 6]),
+        DataFrame(U = [7, 8], V = [9, 10])
+    ]
+    filenames = [&quot;a&quot;, &quot;b&quot;]
+    Options.(objects, filenames)
+end
+multiple_df_example()</code></pre>
+<div id="tbl:a">
+<table>
+<caption>Table 3: A.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">X</th>
+<th style="text-align: right;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tbl:b">
+<table>
+<caption>Table 4: B.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">U</th>
+<th style="text-align: right;">V</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To define the labels and/or captions manually, see Section <a href="/Books.jl/labels-captions.html#sec:labels-captions">3.2</a>. For showing multiple plots, see Section <a href="/Books.jl/plots.html#sec:plots">3.4</a>.</p>
+<p>Most things can be done via functions. However, defining a struct is not possible, because <code>@sco</code> cannot locate the struct definition inside the module. Therefore, it is also possible to pass code and specify that you want to evaluate and show code (sc) without showing the output:</p>
+<pre>
+```jl
+sc("
+struct Point
+    x
+    y
+end
+")
+```
+</pre>
+<pre><code>struct Point
+    x
+    y
+end</code></pre>
+<p>and show code and output (sco). For example,</p>
+<pre>
+```jl
+sco("p = Point(1, 2)")
+```
+</pre>
+<p>shows as</p>
+<pre><code>p = Point(1, 2)</code></pre>
+<pre class="output"><code>Point(1, 2)</code></pre>
+<p>Note that this is starting to look a lot like R Markdown where the syntax would be something like</p>
+<pre>
+```{r, results='hide'}
+x = rnorm(100)
+```
+</pre>
+<p>I guess that there is no perfect way here. The benefit of evaluating the user input directly, as Books.jl is doing, seems to be that it is more extensible if I’m not mistaken. Possibly, the reasoning is that R Markdown needs to convert the output directly, whereas Julia’s better type system allows for converting in much later stages, but I’m not sure.</p>
+<blockquote>
+<p><strong>Tip</strong>: When using <code>sco</code>, the code is evaluated in the <code>Main</code> module. This means that the objects, such as the <code>Point</code> struct defined above, are available in your REPL after running <code>gen()</code>.</p>
+</blockquote>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>config.toml - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="2.2" id="sec:config"><span class="header-section-number">2.2</span> config.toml</h2>
+<p>The <code>config.toml</code> file is used by Books.jl. Settings in this file affect how Pandoc is called. In <code>config.toml</code>, you can define multiple projects; at least define <code>projects.default</code>. The settings of <code>projects.default</code> are used when you call <code>pdf()</code> or <code>serve()</code>. To use other settings, for example the settings for <code>dev</code>, use <code>pdf(project="dev")</code> or <code>serve(project="dev")</code>.</p>
+<p>Below, the default configuration is shown. When not defining a <code>config.toml</code> file or omitting any of the settings, such as <code>port</code>, these defaults will be used. You don’t have to copy all these defaults, only <em>override</em> the settings that you want to change. The benefit of multiple projects is, for example, that you can run a <code>dev</code> project locally which contains more information than the <code>default</code> project. One example could be where you write a paper, book or report and have a page with some notes.</p>
+<p>The meaning of <code>contents</code> is discussed in Section <a href="/Books.jl/config.html#sec:about_contents">2.2.1</a>. The <code>pdf_filename</code> is used by <code>pdf()</code> and the <code>port</code> setting is used by <code>serve()</code>. For this documentation, the following config is used</p>
+<pre><code>[projects]
+
+  [projects.default]
+  contents = [
+    &quot;about&quot;,
+    &quot;getting-started&quot;,
+    &quot;demo&quot;,
+    &quot;references&quot;,
+  ]
+  output_filename = &quot;books&quot;
+
+  # Prefix for GitHub Pages.
+  online_url_prefix = &quot;/Books.jl&quot;
+
+  # Extra directories to be copied.
+  extra_directories = [
+    &quot;images&quot;,
+    &quot;files&quot;
+  ]
+
+  port = 8012
+
+  [projects.notes]
+  contents = [
+    &quot;demo&quot;,
+    &quot;notes&quot;,
+    &quot;references&quot;
+  ]
+</code></pre>
+<p>Which overrides some settings from the following default settings</p>
+<pre><code>[projects]
+
+  # Default project, used when calling serve() or pdf().
+  [projects.default]
+  homepage_contents = &quot;index&quot;
+
+  metadata_path = &quot;metadata.yml&quot;
+
+  contents = [
+    &quot;introduction&quot;,
+    &quot;analysis&quot;,
+    &quot;references&quot;
+  ]
+
+  # Output pdf or docx filename.
+  output_filename = &quot;analysis&quot;
+
+  # Prefix for GitHub or GitLab Pages.
+  online_url_prefix = &quot;&quot;
+
+  # Port used by serve().
+  port = 8010
+
+  # Extra directories to be copied from the project root into `_build/`.
+  extra_directories = []
+
+  # For large books, it can be nice to show some information on the homepage
+  # which is only visible to online visitors and hidden from offline users (PDF).
+  include_homepage_outside_html = false
+
+
+
+  # Alternative project, used when calling, for example, serve(project=&quot;dev&quot;).
+  [projects.dev]
+  homepage_contents = &quot;index&quot;
+
+  metadata_path = &quot;metadata.yml&quot;
+
+  contents = [
+    &quot;introduction&quot;,
+    &quot;analysis&quot;,
+    &quot;notes&quot;,
+    &quot;references&quot;
+  ]
+
+  output_filename = &quot;analysis-with-notes&quot;
+
+  port = 8011
+
+  extra_directories = []
+
+  include_homepage_outside_html = false
+</code></pre>
+<p>Here, the <code>extra_directories</code> allows you to specify directories which need to be moved into <code>_build</code>, which makes them available for the local server and online. This is, for instance, useful for images like Figure <a href="/Books.jl#fig:book_store">1</a>:</p>
+<pre>
+![Book store.](images/book-store.jpg){#fig:book_store}
+</pre>
+<figure>
+<img src="images/book-store.jpg" id="fig:book_store" alt="Figure 1: Book store." /><figcaption aria-hidden="true">Figure 1: Book store.</figcaption>
+</figure>
+<h3 data-number="2.2.1" id="sec:about_contents"><span class="header-section-number">2.2.1</span> About contents</h3>
+<p>The files listed in <code>contents</code> are read from the <code>contents/</code> directory and passed to Pandoc in the order specified by this list. It doesn’t matter whether the files contain headings or at what levels the heading are. Pandoc will just place the texts behind each other.</p>
+<p>This list doesn’t mention the <a href="/Books.jl/">homepage</a> for the website. That one is specified on a per project basis with <code>homepage_contents</code>, which defaults to <code>index</code>. The homepage typically contains the link to the generated PDF. Note that the homepage is only added to the html output and not to pdf or other outputs.</p>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>

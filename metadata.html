@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rik Huijzer" />
+  <title>metadata.yml - Books.jl</title>
+  <link rel="shortcut icon" type="image/png" href="/Books.jl/favicon.png"/>
+  <link rel="stylesheet" href="/Books.jl/style.css"/>
+    <script src="/mousetrap.min.js"></script>
+    <!-- TODO: Add url_prefix. -->
+  <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("/JuliaMono-Regular.woff2");
+  }
+  </style>
+  <link rel="stylesheet" href="/Books.jl/files/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!-- Example comment placed in the html header. --> 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="/Books.jl/">Books.jl</a>
+</div><br />
+<span class="books-subtitle">
+Create books with Julia
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="/Books.jl/about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a></li>
+<li><a class="menu-level-2" href="/Books.jl/metadata.html"><b>2.1</b> metadata.yml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a></li>
+<li><a class="menu-level-2" href="/Books.jl/templates.html"><b>2.3</b> Templates</a></li>
+<li><a class="menu-level-1" href="/Books.jl/demo.html"><b>3</b> Demo</a></li>
+<li><a class="menu-level-2" href="/Books.jl/embedding-output.html"><b>3.1</b> Embedding output</a></li>
+<li><a class="menu-level-2" href="/Books.jl/labels-captions.html"><b>3.2</b> Labels and captions</a></li>
+<li><a class="menu-level-2" href="/Books.jl/function_code_blocks.html"><b>3.3</b> Obtaining function def..</a></li>
+<li><a class="menu-level-2" href="/Books.jl/plots.html"><b>3.4</b> Plots</a></li>
+<li><a class="menu-level-2" href="/Books.jl/other-notes.html"><b>3.5</b> Other notes</a></li>
+<li><a class="menu-level-1" href="/Books.jl/references.html"><b></b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="2.1" id="sec:metadata"><span class="header-section-number">2.1</span> metadata.yml</h2>
+<p>The <code>metadata.yml</code> file is read by Pandoc. Settings in this file affect the behaviour of Pandoc and get inserted in the templates. For more info on templates, see Section <a href="/Books.jl/templates.html#sec:templates">2.3</a>. You can override settings by placing a <code>metadata.yml</code> file at the root directory of your project. For example, the metadata for this project contains:</p>
+<pre><code>---
+title: Books.jl
+subtitle: Create books with Julia
+book: false
+author: Rik Huijzer
+pdf-footer: https://github.com/rikhuijzer/Books.jl
+
+# An example additional header include for html.
+# Note that the url will be updated by \`Books.fix_links\`.
+header-includes:
+- |
+  \`\`\`{=html}
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;/files/style.css&quot;/&gt;
+  \`\`\`
+mousetrap: true
+---
+</code></pre>
+<p>The following defaults are set by Books.jl.</p>
+<pre><code>---
+title: My book
+subtitle: My book subtitle
+author: John Doe
+
+# This affects things as whether to include a white page before each chapter in the PDF.
+# See the `.tex` template for more information.
+# For reports, set `book: false`.
+book: true
+
+# Licenses; can be empty.
+html-license: &lt;a href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;CC BY-SA 4.0&lt;/a&gt;
+tex-license: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+
+pdf-footer: &quot;\\url{https://github.com/johndoe/Book.jl}&quot;
+
+# Make margins a bit smaller. LaTeX has huge default margins.
+geometry:
+  - top=20mm
+  - left=24mm
+  - right=24mm
+  - bottom=28mm
+
+# A setting for the PDF. I don&#39;t know whether it is important.
+lang: en-US
+
+tags: [pandoc, Books.jl, JuliaLang]
+number-sections: true
+
+code-block-font-size: \scriptsize
+
+titlepage: true
+linkReferences: true
+bibliography: bibliography.bib
+link-citations: true
+
+# These table of contents settings only affect the PDF.
+toc: true
+toc-depth: 2
+
+# Cross-reference prefixes.
+eqnPrefix: Equation
+figPrefix: Figure
+tblPrefix: Table
+secPrefix: Section
+
+# Keyboard shortcuts.
+mousetrap: true
+---
+</code></pre>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-1" href="/Books.jl/getting-started.html"><b>2</b> Getting started</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="/Books.jl/config.html"><b>2.2</b> config.toml</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+    Rik Huijzer
+</div>
+</div>
+</div>
+</body>
+</html>
